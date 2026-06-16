@@ -2,7 +2,7 @@ import streamlit as st
 
 # Tiêu đề ứng dụng
 st.title("💰 Ứng dụng tính tiền gửi tiết kiệm_Diễm Quỳnh")
-st.image("DIEMQUYNH.JPG", width=300)
+st.image("DIEMQUYNH.jpg", width=300)
 # Nhập dữ liệu
 C = st.number_input(
     "Nhập số tiền khách hàng gửi tiết kiệm (triệu đồng)",
