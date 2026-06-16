@@ -10,32 +10,56 @@ st.set_page_config(
 
 st.title("💰 Ứng dụng tính tiền gửi tiết kiệm_Diễm Quỳnh")
 
-# Danh sách các tên file ảnh của Diễm Quỳnh trên GitHub
-cac_ten_file_anh_pho_bien = [
-    "diemquynh.jpg", 
-    "diemquynh.png", 
-    "DIEMQUYNH.JPG", 
-    "DIEMQUYNH.PNG"
-]
-
+# 🔎 TÍNH NĂNG SIÊU THÁM TỬ: Quét tự động tất cả các file trong thư mục
+danh_sach_file = os.listdir('.')
 anh_tim_thay = None
+danh_sach_anh_trong_thu_muc = []
 
-# Tự động quét xem file ảnh nào đang có sẵn trên kho GitHub của bạn
-for ten_file in cac_ten_file_anh_pho_bien:
-    if os.path.exists(ten_file):
-        anh_tim_thay = ten_file
+# Lọc ra tất cả các file có đuôi ảnh hợp lệ
+duoi_anh_hop_le = ('.jpg', '.png', '.jpeg', '.webp', '.gif', '.heic', '.jfif')
+for file_name in danh_sach_file:
+    if file_name.lower().endswith(duoi_anh_hop_le):
+        danh_sach_anh_trong_thu_muc.append(file_name)
+
+# 1. Thử tìm xem có ảnh nào tên chứa chữ "quynh" hoặc "diem" không
+for file_anh in danh_sach_anh_trong_thu_muc:
+    ten_lower = file_anh.lower()
+    if "quynh" in ten_lower or "diem" in ten_lower:
+        anh_tim_thay = file_anh
         break
 
-# Hiển thị ảnh nếu tìm thấy, ngược lại thì hiện hướng dẫn nhẹ nhàng chứ không báo lỗi đỏ
+# 2. Nếu không có chữ "quynh" mà trong thư mục chỉ có duy nhất 1 file ảnh, dùng luôn ảnh đó
+if not anh_tim_thay and len(danh_sach_anh_trong_thu_muc) == 1:
+    anh_tim_thay = danh_sach_anh_trong_thu_muc[0]
+
+# 3. Nếu vẫn không được, thử tìm các tên phổ biến mặc định
+if not anh_tim_thay:
+    ten_mac_dinh = ["diemquynh.jpg", "diemquynh.png", "DIEMQUYNH.JPG", "DIEMQUYNH.PNG", "THAONHI.JPG"]
+    for ten in ten_mac_dinh:
+        if os.path.exists(ten):
+            anh_tim_thay = ten
+            break
+
+# Hiển thị ảnh nếu tìm thấy
 if anh_tim_thay:
     st.image(anh_tim_thay, width=300, caption="Ảnh đại diện xinh xắn của Diễm Quỳnh nè! ✨")
+    # Hiển thị thông báo nhỏ báo tên file ảnh đã nhận diện thành công
+    st.toast(f"🎉 Đã tìm thấy và hiển thị ảnh: '{anh_tim_thay}'")
 else:
+    # Nếu không tìm thấy file ảnh nào, hiện giao diện hỗ trợ Quỳnh sửa lỗi trực quan
+    st.warning("⚠️ **Không tìm thấy file ảnh nào trong kho GitHub của bạn!**")
+    
     st.info(
-        "💡 **Tin nhắn từ trợ lý:** Quỳnh ơi! Bạn chưa tải file ảnh lên GitHub "
-        "hoặc đặt tên ảnh chưa đúng rồi.\n\n"
-        "👉 Hãy chọn một bức ảnh trên máy, đổi tên file thành **`diemquynh.jpg`** "
-        "rồi tải lên GitHub (bằng nút *Add file -> Upload files*) là ảnh sẽ hiện ở đây ngay nha!"
+        "💡 **Cách sửa lỗi cực nhanh:**\n\n"
+        "1. Bạn hãy đổi tên bức ảnh trên máy tính/điện thoại thành **`diemquynh.jpg`** (viết thường toàn bộ, viết liền không dấu).\n"
+        "2. Lên GitHub bấm nút **Add file** ➔ **Upload files** rồi tải bức ảnh đó lên.\n"
+        "3. Kéo xuống dưới cùng trang GitHub bấm nút màu xanh **Commit changes** là xong!"
     )
+    
+    # In ra danh sách file thực tế đang có trên GitHub để Quỳnh đối chiếu
+    st.write("---")
+    st.write("🔍 **Danh sách các file thực tế đang có trên GitHub của bạn hiện tại:**")
+    st.code("\n".join(danh_sach_file), language="text")
 
 st.write("---")
 
@@ -67,3 +91,5 @@ if st.button("Tính toán ngay"):
     ketqua = sotien * (1 + (laisuat / 100) * (thang / 12))
     st.balloons()  # Hiệu ứng bong bóng bay mừng thành công
     st.success(f"🎉 Số tiền bạn nhận được cả gốc lẫn lãi sau {thang} tháng gửi là: **{ketqua:.2f}** triệu đồng")
+```
+eof
